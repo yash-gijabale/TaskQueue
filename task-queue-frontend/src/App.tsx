@@ -1,13 +1,12 @@
-
-import './App.css'
+import "./App.css";
+import Layout from "./layout/Layout";
 
 function App() {
-
   return (
     <>
-      <div><h1>Task Queue App</h1></div>
+      <Layout />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
