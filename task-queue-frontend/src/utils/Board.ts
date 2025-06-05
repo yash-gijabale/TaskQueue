@@ -10,7 +10,7 @@ export const findBoardSectionContainer = (
     }
     //console.log(boardSections, id)
     const container: any = Object.keys(boardSections).find((key) =>
-        boardSections[key].find((item) => item.id === id)
+        boardSections[key].task.find((item) => item.id === id)
     );
     return container;
 };

@@ -1,27 +1,49 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import Modal from "../components/common/Modal";
 import NewBoardForm from "../components/board/NewBoardForm";
-import BoardList from "../components/board/BoardList";
+import BoardList, { type Board } from "../components/board/BoardList";
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch } from "../redux/store";
+import { addNewBoard } from "../redux/boardListReducer/action";
+import { INITISL_BOARD_COLUMNS } from "../redux/boardReducer/boardReducer";
 
-const initialBoardForm = {
+export const initialBoardForm = {
   boardName: "",
   boardDesc: "",
+};
+
+export const updateLocalStorageBoard = (data: any) => {
+  localStorage.setItem("boardList", JSON.stringify(data));
 };
 
 const BoardView: React.FC = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [formData, setFormData] = useState(initialBoardForm);
+  const dispatch = useDispatch<AppDispatch>();
+  const boardList = useSelector((state: any) => state.boardListReducer);
 
   const handleCloseModal = () => {
     setModalOpen(false);
+
     setFormData(initialBoardForm);
   };
 
+  useEffect(() => {
+    updateLocalStorageBoard(boardList);
+  }, [boardList]);
+
   const handleCreateBoard = () => {
-    console.log("Form submitted with:", formData);
-    // Add board creation logic here (API call, update state, etc.)
-    // Optionally reset form
+    let newBoard: Board = {
+      id: uuidv4(),
+      name: formData.boardName,
+      description: formData.boardDesc,
+      createdAt: new Date().toISOString().substring(0, 10),
+      columns: INITISL_BOARD_COLUMNS,
+    };
+    dispatch(addNewBoard(newBoard));
+    handleCloseModal();
   };
 
   return (

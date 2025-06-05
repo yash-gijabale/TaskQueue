@@ -24,12 +24,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addNewColumn,
   editTask,
+  getColumnList,
   onDragEnd,
   reArangeTask,
 } from "../redux/boardReducer/action";
 import type { AppDispatch } from "../redux/store";
 import Modal from "../components/common/Modal";
 import EditTaskForm from "../components/board/EditTaskForm";
+import { useParams } from "react-router";
+import { getBoardFromLocalStorage, type Board } from "../components/board/BoardList";
 
 export type Status = "backlog" | "in progress" | "done";
 export type Tags = "Feature" | "Bug" | "Enhancement";
@@ -39,22 +42,55 @@ export type Task = {
   title: string;
   description: string;
   status: string;
-  tag?: Tags
+  tag?: Tags;
 };
 
 export type BoardSectionsType = {
-  [name: string]: Task[];
+  [name: string]: { title: string; task: Task[] };
+};
+
+const setActiveBoardId = (id: string) => {
+  localStorage.setItem("activeBordId", JSON.stringify(id));
+};
+
+const updateLocalStorageboard = (boardId: any, data: BoardSectionsType) => {
+  if (boardId) {
+    let allBoard: any[] = JSON.parse(localStorage.getItem("boardList") as any);
+    allBoard = allBoard.map((board: any) => {
+      if (board.id === boardId) {
+        return {
+          ...board,
+          columns: data,
+        };
+      }
+      return board;
+    });
+    localStorage.setItem("boardList", JSON.stringify(allBoard));
+  }
+  console.log("localstorage updated");
 };
 
 const BoardSectionList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
-
   const boardSections = useSelector((state: any) => state.boardReducer);
-
+  console.log(boardSections);
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
   const [activeContainer, setActiveContainer] = useState<null | string>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
+  const [currenBoard, setCurrentBoard] = useState<Board | null>(null);
+
+  const { id } = useParams();
+  useEffect(() => {
+    if (id) {
+      setActiveBoardId(id);
+      let board = getBoardFromLocalStorage(id)
+      setCurrentBoard(board)
+      
+    }
+
+    dispatch(getColumnList());
+  }, []);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -95,9 +131,13 @@ const BoardSectionList: React.FC = () => {
         over: over?.id,
       })
     );
+    if (id) {
+      updateLocalStorageboard(id, boardSections);
+    }
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
+    console.log(active, over);
     const activeContainer = findBoardSectionContainer(
       boardSections,
       active.id as string
@@ -107,6 +147,7 @@ const BoardSectionList: React.FC = () => {
       over?.id as string
     );
 
+    console.log(activeContainer, overContainer);
     if (
       !activeContainer ||
       !overContainer ||
@@ -115,10 +156,10 @@ const BoardSectionList: React.FC = () => {
       return;
     }
 
-    const activeIndex = boardSections[activeContainer].findIndex(
+    const activeIndex = boardSections[activeContainer].task.findIndex(
       (task: any) => task.id === active.id
     );
-    const overIndex = boardSections[overContainer].findIndex(
+    const overIndex = boardSections[overContainer].task.findIndex(
       (task: any) => task.id === over?.id
     );
 
@@ -135,6 +176,9 @@ const BoardSectionList: React.FC = () => {
 
     setActiveTaskId(null);
     setActiveContainer(null);
+    if (id) {
+      updateLocalStorageboard(id, boardSections);
+    }
   };
 
   const dropAnimation: DropAnimation = {
@@ -143,7 +187,7 @@ const BoardSectionList: React.FC = () => {
 
   const task =
     activeTaskId && activeContainer
-      ? getTaskById(boardSections[activeContainer], activeTaskId)
+      ? getTaskById(boardSections[activeContainer].task, activeTaskId)
       : null;
 
   const addColumn = () => {
@@ -152,8 +196,10 @@ const BoardSectionList: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log(boardSections);
-  }, [boardSections]);
+    if (id) {
+      updateLocalStorageboard(id, boardSections);
+    }
+  }, [boardSections, id]);
 
   const opnEditCardModal = (task: Task) => {
     setEditModalOpen(true);
@@ -164,12 +210,13 @@ const BoardSectionList: React.FC = () => {
     activeTask && dispatch(editTask(activeTask));
     setActiveTask(null);
     setEditModalOpen(false);
+    console.log(activeTask);
   };
 
   return (
     <div className="w-full">
       <div className="w-full flex justify-between">
-        <span className="text-lg text-gray-500">All boards</span>
+        <span className="text-lg text-gray-500">{currenBoard && currenBoard.name}</span>
         <button
           className="p-1 px-2 bg-blue-500 text-white rounded flex items-center gap-2 cursor-pointer hover:bg-blue-600"
           onClick={addColumn}
@@ -189,8 +236,8 @@ const BoardSectionList: React.FC = () => {
             <BoardSection
               key={boardSectionKey}
               id={boardSectionKey}
-              title={boardSectionKey}
-              tasks={boardSections[boardSectionKey]}
+              title={boardSections[boardSectionKey].title}
+              tasks={boardSections[boardSectionKey].task}
             />
           ))}
           <DragOverlay dropAnimation={dropAnimation}>
@@ -208,7 +255,11 @@ const BoardSectionList: React.FC = () => {
         submitHandler={editTaskHandler}
       >
         {activeTask && (
-          <EditTaskForm task={activeTask} setActiveTask={setActiveTask} setEditModalOpen={setEditModalOpen} />
+          <EditTaskForm
+            task={activeTask}
+            setActiveTask={setActiveTask}
+            setEditModalOpen={setEditModalOpen}
+          />
         )}
       </Modal>
     </div>

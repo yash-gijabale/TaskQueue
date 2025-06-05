@@ -1,36 +1,86 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
+import Modal from "../common/Modal";
+import NewBoardForm from "./NewBoardForm";
+import {
+  initialBoardForm,
+  updateLocalStorageBoard,
+} from "../../pages/BoardView";
+import type { BoardSectionsType } from "../../pages/BoardSectionList";
+import type { AppDispatch } from "../../redux/store";
+import { deleteBoard, editBoard } from "../../redux/boardListReducer/action";
+import { IoWarningOutline } from "react-icons/io5";
 
-interface Board {
-  id: number;
+export interface Board {
+  id: string;
   name: string;
   description: string;
   createdAt: string;
+  columns: BoardSectionsType;
 }
 
-const mockBoards: Board[] = [
-  {
-    id: 1,
-    name: "Product Roadmap",
-    description: "Plan for upcoming features and releases.",
-    createdAt: "2025-06-01",
-  },
-  {
-    id: 2,
-    name: "Marketing Campaign",
-    description: "Tasks and ideas for our next big launch.",
-    createdAt: "2025-05-22",
-  },
-  {
-    id: 3,
-    name: "Design Sprint",
-    description: "UX and UI designs for next quarter.",
-    createdAt: "2025-05-15",
-  },
-];
+export const getBoardFromLocalStorage = (id: string): Board => {
+  let allBoard: any[] = JSON.parse(localStorage.getItem("boardList") as any);
+  let activeBoard: Board = allBoard.find((board: any) => board.id === id);
+  return activeBoard;
+};
 
 const BoardList: React.FC = () => {
+  const processedBoardList = useSelector(
+    (state: any) => state.boardListReducer
+  );
+
+  const [modalOpen, setModalOpen] = useState(false);
+  const [formData, setFormData] = useState(initialBoardForm);
+  const [activeBoarId, setActiveBoardId] = useState<string | null>(null);
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    useState<boolean>(false);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleCloseModal = () => {
+    setModalOpen(false);
+
+    setFormData(initialBoardForm);
+  };
+
+  const getActiveBoard = (id: string) => {
+    let board: Board = getBoardFromLocalStorage(id);
+    let boardData = {
+      boardName: board.name,
+      boardDesc: board.description,
+    };
+    setFormData(boardData);
+    setModalOpen(true);
+    setActiveBoardId(id);
+  };
+
+  const handleDeleteBoard = (id: string) => {
+    setConfirmationModalOpen(true);
+    setActiveBoardId(id);
+  };
+
+  const handleConfirmation = () => {
+    if (activeBoarId) {
+      dispatch(deleteBoard(activeBoarId));
+      setConfirmationModalOpen(false);
+      setActiveBoardId(null);
+    }
+  };
+
+  const handleEditBoard = () => {
+    if (activeBoarId) {
+      dispatch(editBoard({ id: activeBoarId, data: formData }));
+      handleCloseModal();
+      setActiveBoardId(null);
+    }
+  };
+
+  useEffect(() => {
+    updateLocalStorageBoard(processedBoardList);
+  }, [processedBoardList]);
+
   return (
     <div className="w-full mt-10">
       <div className="overflow-x-auto">
@@ -44,10 +94,10 @@ const BoardList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {mockBoards.map((board) => (
+            {processedBoardList.map((board: any) => (
               <tr
                 key={board.id}
-                className='text-gray-700 text-sm border-b-1 border-gray-200'
+                className="text-gray-700 text-sm border-b-1 border-gray-200"
               >
                 <td className="px-3 py-4 whitespace-nowrap font-medium text-blue-500">
                   <Link to={`/board/${board.id}`}>{board.name}</Link>
@@ -56,11 +106,17 @@ const BoardList: React.FC = () => {
                 <td className="px-3 py-4 text-sm text-gray-500">
                   {board.createdAt}
                 </td>
-                <td className="px-3 py-4 text-right space-x-3">
-                  <button className="text-blue-600 hover:text-blue-800">
+                <td className="px-5 py-4 text-right space-x-3">
+                  <button
+                    onClick={() => getActiveBoard(board.id)}
+                    className="text-blue-600 hover:text-blue-800 text-lg cursor-pointer "
+                  >
                     <FiEdit className="inline-block" />
                   </button>
-                  <button className="text-red-500 hover:text-red-700">
+                  <button
+                    onClick={() => handleDeleteBoard(board.id)}
+                    className="text-red-500 hover:text-red-700 text-lg cursor-pointer"
+                  >
                     <FiTrash2 className="inline-block" />
                   </button>
                 </td>
@@ -69,6 +125,32 @@ const BoardList: React.FC = () => {
           </tbody>
         </table>
       </div>
+
+      <Modal
+        open={modalOpen}
+        submitHandler={handleEditBoard}
+        handleCloseModal={handleCloseModal}
+        title="Edit board"
+      >
+        <NewBoardForm formData={formData} setFormData={setFormData} />
+      </Modal>
+
+      <Modal
+        open={confirmationModalOpen}
+        title="Confirm"
+        handleCloseModal={setConfirmationModalOpen}
+        confirmation={true}
+        submitHandler={handleConfirmation}
+      >
+        <div className="w-full flex justify-center flex-col">
+          <div className="w-full flex justify-center text-5xl text-red-400">
+            <IoWarningOutline />
+          </div>
+          <span className="text-lg text-center">
+            Are you sure want to delete
+          </span>
+        </div>
+      </Modal>
     </div>
   );
 };

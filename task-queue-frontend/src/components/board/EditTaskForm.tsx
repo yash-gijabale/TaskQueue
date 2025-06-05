@@ -73,6 +73,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
               }
               className="p-2  rounded outline-blue-500  border-1 border-gray-400"
             >
+              <option></option>
               {tags.map((tag: Tags, ind) => {
                 return (
                   <option key={ind} value={tag}>

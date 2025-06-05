@@ -7,6 +7,7 @@ interface ModalProps {
   submitHandler?: any;
   title: string;
   children: any;
+  confirmation?: boolean;
 }
 const Modal: React.FC<ModalProps> = ({
   open,
@@ -14,6 +15,7 @@ const Modal: React.FC<ModalProps> = ({
   submitHandler,
   title,
   children,
+  confirmation,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +37,10 @@ const Modal: React.FC<ModalProps> = ({
         onKeyDown={handleEscKey}
         className="w-screen fixed h-screen inset-0 bg-black/20 flex z-50 justify-center items-center"
       >
-        <div className="w-[40%] rounded bg-white" onClick={(e)=>e.stopPropagation()}>
+        <div
+          className="w-[40%] rounded bg-white"
+          onClick={(e) => e.stopPropagation()}
+        >
           <div className="w-full h-10 p-6 px-3 border-b-1 border-gray-200 flex items-center justify-between">
             <span className="text-lg">{title}</span>
             <button
@@ -55,12 +60,21 @@ const Modal: React.FC<ModalProps> = ({
             >
               Cancle
             </button>
-            <button
-              className="p-1 px-3 bg-blue-500 rounded text-white cursor-pointer hover:bg-blue-600"
-              onClick={submitHandler}
-            >
-              {title}
-            </button>
+            {!confirmation ? (
+              <button
+                className="p-1 px-3 bg-blue-500 rounded text-white cursor-pointer hover:bg-blue-600"
+                onClick={submitHandler}
+              >
+                {title}
+              </button>
+            ) : (
+              <button
+                className="p-1 px-3 bg-red-500 rounded text-white cursor-pointer hover:bg-red-600"
+                onClick={submitHandler}
+              >
+                Delete
+              </button>
+            )}
           </div>
         </div>
       </div>

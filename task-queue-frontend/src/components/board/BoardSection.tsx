@@ -10,8 +10,16 @@ import type { Task } from "../../pages/BoardSectionList";
 import TaskItem from "./TaskItem";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
-import { addTask, renameBoardColumn } from "../../redux/boardReducer/action";
+import {
+  addTask,
+  removeColumn,
+  renameBoardColumn,
+} from "../../redux/boardReducer/action";
 import { v4 as uuidv4 } from "uuid";
+import Modal from "../common/Modal";
+
+import { BiTrash } from "react-icons/bi";
+import { IoWarningOutline } from "react-icons/io5";
 
 type BoardSectionProps = {
   id: string;
@@ -25,31 +33,44 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
   });
 
   const dispatch = useDispatch<AppDispatch>();
+  const [confirmationModalOpen, setConfirmationModalOpen] =
+    useState<boolean>(false);
 
   const addNewTask = () => {
     let newTask: Task = {
       id: uuidv4(),
       title: "Add title",
       status: id,
-      description: "test",
+      description: "",
     };
     dispatch(addTask(newTask));
   };
 
-  const [currentTile, setCurrentTitle] = useState<string>(title)
-  const handleTitleChange = (e:any) =>{
-    let newtitle:string = e.target.value
-    setCurrentTitle(newtitle)
-    dispatch(renameBoardColumn({oldName:title, newName:newtitle}))
-  }
+  const [currentTile, setCurrentTitle] = useState<string>(title);
+  const handleTitleChange = (e: any) => {
+    let newtitle: string = e.target.value;
+    setCurrentTitle(newtitle);
+    dispatch(renameBoardColumn({ id: id, newName: newtitle }));
+  };
+
+  const handleRemoveColumn = () => {
+    dispatch(removeColumn(id));
+  };
   return (
     <div className="min-w-[300px] h-fit bg-gray-200 rounded-lg p-2 flex flex-col gap-5">
-      <div>
+      <div className="w-full flex justify-between">
         <input
+          tabIndex={0}
           value={currentTile}
-          onChange={(e)=>handleTitleChange(e)}
+          onInput={(e) => handleTitleChange(e)}
           className="text-lg font-medium uppercase border-0 outline-0"
         />
+        <button
+          onClick={() => setConfirmationModalOpen(true)}
+          className="w-fit p-1 rounded hover:bg-white transition-all cursor-pointer"
+        >
+          <BiTrash />
+        </button>
       </div>
       <SortableContext
         id={id}
@@ -72,6 +93,23 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
           Add Task
         </button>
       </div>
+
+      <Modal
+        open={confirmationModalOpen}
+        title="Confirm"
+        handleCloseModal={setConfirmationModalOpen}
+        confirmation={true}
+        submitHandler={handleRemoveColumn}
+      >
+        <div className="w-full flex justify-center flex-col">
+          <div className="w-full flex justify-center text-5xl text-red-400">
+            <IoWarningOutline />
+          </div>
+          <span className="text-lg text-center">
+            Are you sure want to delete {title.toUpperCase()}
+          </span>
+        </div>
+      </Modal>
     </div>
   );
 };

@@ -36,7 +36,7 @@ const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
       className="w-full p-2 bg-white rounded-md cursor-grab"
     >
       {task.tag && (
-        <div className={`w-fit px-1 rounded text-sm ${tagColor[task.tag]}`}>{task.tag}</div>
+        <div className={`w-fit px-2 rounded text-sm ${tagColor[task.tag]}`}>{task.tag}</div>
       )}
       <span className="font-semibold">{task.title}</span>
       <div className="w-full">
