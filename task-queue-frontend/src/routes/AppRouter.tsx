@@ -3,6 +3,7 @@ import Home from "../pages/Home";
 import { useRoutes } from "react-router";
 import { Navigate, type RouteObject } from 'react-router';
 import BoardView from "../pages/BoardView";
+import BoardSectionList from "../pages/BoardSectionList";
 
 const routes: Array<RouteObject> = [
   {
@@ -10,8 +11,12 @@ const routes: Array<RouteObject> = [
     element: <Home />,
   },
   {
-    path: "/bord",
+    path: "/board-list",
     element: <BoardView />,
+  },
+  {
+    path: "/board/:id",
+    element: <BoardSectionList />,
   },
   {
     path: "*",

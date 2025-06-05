@@ -1,5 +1,6 @@
 import React from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
+import { Link } from "react-router";
 
 interface Board {
   id: number;
@@ -35,7 +36,7 @@ const BoardList: React.FC = () => {
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white rounded-xl shadow-sm ">
           <thead>
-            <tr className="text-sm text-gray-700 rounded-xl uppercase bg-gray-200">
+            <tr className="text-sm text-gray-800 font-normal rounded-xl uppercase bg-gray-200">
               <th className="px-6 py-3 text-left">Name</th>
               <th className="px-6 py-3 text-left">Description</th>
               <th className="px-6 py-3 text-left">Created</th>
@@ -48,8 +49,8 @@ const BoardList: React.FC = () => {
                 key={board.id}
                 className='text-gray-700 text-sm border-b-1 border-gray-200'
               >
-                <td className="px-3 py-4 whitespace-nowrap font-medium">
-                  {board.name}
+                <td className="px-3 py-4 whitespace-nowrap font-medium text-blue-500">
+                  <Link to={`/board/${board.id}`}>{board.name}</Link>
                 </td>
                 <td className="px-3 py-4">{board.description}</td>
                 <td className="px-3 py-4 text-sm text-gray-500">

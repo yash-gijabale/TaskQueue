@@ -5,7 +5,7 @@ import MainHeader from "../components/header/MainHeader";
 
 const Layout: React.FC = () => {
   return (
-    <div className="w-screen h-screen flex">
+    <div className="w-screen h-screen flex overflow-x-hidden">
       {/* Sidebar */}
       <Sitebar />
 
