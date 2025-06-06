@@ -57,7 +57,7 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
     dispatch(removeColumn(id));
   };
   return (
-    <div className="min-w-[300px] h-fit bg-gray-200 rounded-lg p-2 flex flex-col gap-5">
+    <div className="w-[400px] h-fit bg-gray-300 rounded-lg p-2 flex flex-col gap-5">
       <div className="w-full flex justify-between">
         <input
           tabIndex={0}

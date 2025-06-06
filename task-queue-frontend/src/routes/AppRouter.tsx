@@ -1,9 +1,10 @@
 import React from "react";
 import Home from "../pages/Home";
 import { useRoutes } from "react-router";
-import { Navigate, type RouteObject } from 'react-router';
+import { Navigate, type RouteObject } from "react-router";
 import BoardView from "../pages/BoardView";
 import BoardSectionList from "../pages/BoardSectionList";
+import Users from "../pages/Users";
 
 const routes: Array<RouteObject> = [
   {
@@ -19,8 +20,12 @@ const routes: Array<RouteObject> = [
     element: <BoardSectionList />,
   },
   {
+    path: "/users",
+    element: <Users />,
+  },
+  {
     path: "*",
-    element: <Navigate to={'/'} />,
+    element: <Navigate to={"/"} />,
   },
 ];
 const AppRouter: React.FC = () => {

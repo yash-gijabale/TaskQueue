@@ -24,7 +24,7 @@ const Menu: React.FC = () => {
       <div className="w-full h-10 flex rounded px-2 items-center text-gray-700 hover:bg-gray-200 cursor-pointer hover:text-black">
         <div className="flex space-x-1 items-center justify-center">
           <FaUsers className="text-[25px]" />
-          <span className="text-md">User</span>
+          <Link to={'users'} className="text-md">Users</Link>
         </div>
       </div>
     <div className="w-full h-10 flex rounded px-2 items-center text-gray-700 hover:bg-gray-200 cursor-pointer hover:text-black">
