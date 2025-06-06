@@ -79,7 +79,7 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
       >
         <div ref={setNodeRef} className="flex flex-col gap-3">
           {tasks.map((task) => (
-            <SortableTaskItem key={task.id} id={task.id}>
+            <SortableTaskItem key={task.id} id={task.id} assigneeUser={task.users}>
               <TaskItem task={task} />
             </SortableTaskItem>
           ))}

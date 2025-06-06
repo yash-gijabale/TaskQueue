@@ -32,10 +32,13 @@ import type { AppDispatch } from "../redux/store";
 import Modal from "../components/common/Modal";
 import EditTaskForm from "../components/board/EditTaskForm";
 import { useParams } from "react-router";
-import { getBoardFromLocalStorage, type Board } from "../components/board/BoardList";
+import {
+  getBoardFromLocalStorage,
+  type Board,
+} from "../components/board/BoardList";
 
 export type Status = "backlog" | "in progress" | "done";
-export type Tags = "Feature" | "Bug" | "Enhancement";
+export type Tags = "high" | "medium" | "low";
 
 export type Task = {
   id: string;
@@ -43,6 +46,7 @@ export type Task = {
   description: string;
   status: string;
   tag?: Tags;
+  users?: Array<{ id: string; name: string }>;
 };
 
 export type BoardSectionsType = {
@@ -84,9 +88,8 @@ const BoardSectionList: React.FC = () => {
   useEffect(() => {
     if (id) {
       setActiveBoardId(id);
-      let board = getBoardFromLocalStorage(id)
-      setCurrentBoard(board)
-      
+      let board = getBoardFromLocalStorage(id);
+      setCurrentBoard(board);
     }
 
     dispatch(getColumnList());
@@ -105,6 +108,7 @@ const BoardSectionList: React.FC = () => {
 
   const handleDragOver = ({ active, over }: DragOverEvent) => {
     // Find the containers
+
     const activeContainer = findBoardSectionContainer(
       boardSections,
       active.id as string
@@ -114,6 +118,8 @@ const BoardSectionList: React.FC = () => {
       boardSections,
       over?.id as string
     );
+
+    console.log(activeContainer,overContainer)
 
     if (
       !activeContainer ||
@@ -199,7 +205,8 @@ const BoardSectionList: React.FC = () => {
     if (id) {
       updateLocalStorageboard(id, boardSections);
     }
-  }, [boardSections, id]);
+
+  }, [boardSections, id, activeTask]);
 
   const opnEditCardModal = (task: Task) => {
     setEditModalOpen(true);
@@ -210,13 +217,14 @@ const BoardSectionList: React.FC = () => {
     activeTask && dispatch(editTask(activeTask));
     setActiveTask(null);
     setEditModalOpen(false);
-    console.log(activeTask);
   };
 
   return (
     <div className="w-full">
       <div className="w-full flex justify-between">
-        <span className="text-lg text-gray-500">{currenBoard && currenBoard.name}</span>
+        <span className="text-lg text-gray-500">
+          {currenBoard && currenBoard.name}
+        </span>
         <button
           className="p-1 px-2 bg-blue-500 text-white rounded flex items-center gap-2 cursor-pointer hover:bg-blue-600"
           onClick={addColumn}
@@ -242,7 +250,7 @@ const BoardSectionList: React.FC = () => {
           ))}
           <DragOverlay dropAnimation={dropAnimation}>
             {task ? (
-              <TaskItem task={task} clickHandler={opnEditCardModal} />
+              <TaskItem task={task} clickHandler={opnEditCardModal}  />
             ) : null}
           </DragOverlay>
         </div>

@@ -1,5 +1,7 @@
 import { useRef } from "react";
-import type { Tags, Task } from "../../pages/BoardSectionList";
+import type { Task } from "../../pages/BoardSectionList";
+import { useSelector } from "react-redux";
+import type { Auth } from "../../redux/authReducer/authReducer";
 
 type TaskItemProps = {
   task: Task;
@@ -7,12 +9,18 @@ type TaskItemProps = {
 };
 
 const tagColor: { [name: string]: string } = {
-  Bug: "bg-red-300",
-  Feature: "bg-lime-300",
-  Enhancement: "bg-purple-300 ",
+  high: "bg-red-300",
+  medium: "bg-lime-300",
+  low: "bg-purple-300 ",
 };
-
+const checkForMyTask = (userId: string, assigneeUsers: Array<any>) => {
+  let isAssignTome = assigneeUsers.filter((user) => user.id === userId);
+  return isAssignTome.length ? true : false;
+};
 const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
+  const auth: Auth = useSelector((state: any) => state.authReducer);
+
+  const isAssignTome = auth.user?.id && task.users && checkForMyTask(auth.user?.id, task.users)
   const isDragging = useRef(false);
 
   const handlePointerDown = () => {
@@ -35,12 +43,25 @@ const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
       onPointerUp={handlePointerUp}
       className="w-full p-2 bg-white rounded-md cursor-grab"
     >
-      {task.tag && (
-        <div className={`w-fit px-2 rounded text-sm ${tagColor[task.tag]}`}>{task.tag}</div>
-      )}
+      <div className="w-full flex justify-between">
+        {task.tag && (
+          <div className={`w-fit px-2 rounded text-xs ${tagColor[task.tag]}`}>
+            {task.tag.toUpperCase()}
+          </div>
+        )}
+        {isAssignTome && <div className="w-fit px-2 rounded text-xs bg-lime-400">My</div>}
+      </div>
+
       <span className="font-semibold">{task.title}</span>
       <div className="w-full">
         <span>{task.description}</span>
+      </div>
+      <div className="w-full flex justify-end">
+        {task.users && (
+          <div className="w-fit px-2 text-xs bg-blue-200 rounded">
+            Assignee {task.users.length}
+          </div>
+        )}
       </div>
     </div>
   );

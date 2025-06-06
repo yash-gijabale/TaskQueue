@@ -12,9 +12,12 @@ export const INITISL_BOARD_COLUMNS: BoardSectionsType = {
 
 const getInitialBoard = (): BoardSectionsType => {
     let allBoard: any[] = JSON.parse(localStorage.getItem('boardList') as any)
-    let activeBoardId: string = JSON.parse(localStorage.getItem('activeBordId') as any)
-    let activeBoard = allBoard.find((board: any) => board.id === activeBoardId)
-    return activeBoard ? activeBoard.columns : INITISL_BOARD_COLUMNS
+    if (allBoard) {
+        let activeBoardId: string = JSON.parse(localStorage.getItem('activeBordId') as any)
+        let activeBoard = allBoard.find((board: any) => board.id === activeBoardId)
+        return activeBoard ? activeBoard.columns : INITISL_BOARD_COLUMNS
+    }
+    return INITISL_BOARD_COLUMNS
 }
 const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: ActionType) => {
     switch (action.type) {
@@ -49,9 +52,11 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
         }
 
         case REARANGE_TASK: {
+            console.log('on draf end')
+
             let preState = { ...state };
             let { activeContainer, overContainer, active, over } = action.payload;
-
+            console.log(activeContainer, overContainer)
             const activeItems = preState[activeContainer].task;
             const overItems = preState[overContainer].task;
 
@@ -62,9 +67,14 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
                 (item: Task) => item.id === over
             );
 
-            const movingTask = activeItems[activeIndex];
+            let movingTask = activeItems[activeIndex];
+            movingTask = {
+                ...movingTask,
+                status: overContainer,
+            };
 
             const newActiveItems = activeItems.filter((item: Task) => item.id !== active);
+
             const newOverItems = [...overItems];
             newOverItems.splice(overIndex, 0, movingTask);
 
@@ -93,6 +103,7 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
 
             if (activeIndex === -1 || overIndex === -1) return state;
 
+            console.log(activeContainer, overContainer)
             const movingTask = {
                 ...activeTasks[activeIndex],
                 status: overContainer,
@@ -144,12 +155,16 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
         case EDIT_TASK: {
             const { id, status } = action.payload;
             const preState = { ...state };
+            // console.log(activeContainer, activeTask)
 
             const newTaskList = preState[status].task.map((task: Task) =>
                 task.id === id
-                    ? { ...action.payload }
+                    ? action.payload
                     : task
             );
+
+            console.log(newTaskList)
+            console.log(status)
 
             return {
                 ...preState,
