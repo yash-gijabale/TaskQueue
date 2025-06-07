@@ -49,7 +49,7 @@ const reducer = (state: Board[] = INITIAL_BOARD_LIST, action: ActionType) => {
             let id = action.payload
             let preBoard: Board[] = [...state]
             preBoard = preBoard.filter((board: Board) => board.id !== id)
-
+            updateLocalStorageBoard([...preBoard])
             return preBoard
         }
         default:

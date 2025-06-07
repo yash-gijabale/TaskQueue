@@ -104,7 +104,7 @@ const BoardList: React.FC = () => {
             </tr>
           </thead>
           <tbody>
-            {processedBoardList.map((board: any) => (
+            {processedBoardList && processedBoardList.map((board: any) => (
               <tr
                 key={board.id}
                 className="text-gray-700 text-sm border-b-1 border-gray-200"
