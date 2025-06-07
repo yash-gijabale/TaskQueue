@@ -1,7 +1,7 @@
 import { arrayMove } from "@dnd-kit/sortable";
 import type { BoardSectionsType, Task } from "../../pages/BoardSectionList";
 import type { ActionType } from "../type"
-import { ADD_COLUMN, ADD_TASK, EDIT_TASK, GET_BOARD_LIST, GET_COLUMN_LIST, ON_DRAG_END, REARANGE_TASK, REMOVE_COLUMN, REMOVE_TASK, RENAME_COLUMN } from "./type";
+import { ADD_COLUMN, ADD_TASK, EDIT_TASK, GET_COLUMN_LIST, ON_DRAG_END, REARANGE_TASK, REMOVE_COLUMN, REMOVE_TASK, RENAME_COLUMN } from "./type";
 
 
 export const INITISL_BOARD_COLUMNS: BoardSectionsType = {

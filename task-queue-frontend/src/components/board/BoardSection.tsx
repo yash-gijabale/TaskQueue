@@ -1,4 +1,4 @@
-import React, { useState, type EventHandler } from "react";
+import { useState } from "react";
 import { useDroppable } from "@dnd-kit/core";
 import {
   SortableContext,
