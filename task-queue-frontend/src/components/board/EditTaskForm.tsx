@@ -94,54 +94,54 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
         </div>
         <div className="w-full">
           <label>Assign users</label>
-          <div className="w-full  flex gap-2">
+          <div className="w-full grid grid-cols-2 md:grid-cols-4 gap-2">
             {users.map((user: User, ind) => {
               return (
-                <label
-                  key={ind}
-                  className="inline-flex space-x-1 cursor-pointer text-sm px-2 p-1 items-center bg-blue-200 rounded"
-                >
-                  <input
-                    type="checkbox"
-                    value={user.id}
-                    checked={
-                      task.users?.find((u) => u.id === user.id)?.id === user.id
-                    }
-                    onChange={(e) =>
-                      setActiveTask((prev: Task) => {
-                        if (e.target.checked) {
-                          let user = users.find(
-                            (u: User) => u.id === e.target.value
-                          );
-                          if (user) {
+                <div key={ind} className="w-full">
+                  <label className="inline-flex space-x-1 cursor-pointer text-sm px-2 p-1 items-center bg-blue-200 rounded w-full">
+                    <input
+                      type="checkbox"
+                      value={user.id}
+                      checked={
+                        task.users?.find((u) => u.id === user.id)?.id ===
+                        user.id
+                      }
+                      onChange={(e) =>
+                        setActiveTask((prev: Task) => {
+                          if (e.target.checked) {
+                            let user = users.find(
+                              (u: User) => u.id === e.target.value
+                            );
+                            if (user) {
+                              return {
+                                ...prev,
+                                users: prev.users
+                                  ? [
+                                      ...prev.users,
+                                      {
+                                        id: user.id,
+                                        name: `${user.firstName} ${user.lastName}`,
+                                      },
+                                    ]
+                                  : [],
+                              };
+                            }
+                          } else {
                             return {
                               ...prev,
-                              users: prev.users
-                                ? [
-                                    ...prev.users,
-                                    {
-                                      id: user.id,
-                                      name: `${user.firstName} ${user.lastName}`,
-                                    },
-                                  ]
-                                : [],
+                              users: prev.users?.filter(
+                                (u) => u.id !== e.target.value
+                              ),
                             };
                           }
-                        } else {
-                          return {
-                            ...prev,
-                            users: prev.users?.filter(
-                              (u) => u.id !== e.target.value
-                            ),
-                          };
-                        }
-                      })
-                    }
-                  />
-                  <span>
-                    {user.firstName} {user.lastName}
-                  </span>
-                </label>
+                        })
+                      }
+                    />
+                    <span>
+                      {user.firstName} {user.lastName}
+                    </span>
+                  </label>
+                </div>
               );
             })}
           </div>

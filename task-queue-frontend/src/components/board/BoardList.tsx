@@ -1,8 +1,8 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
-import Modal from "../common/Modal";
+import Modal, { type FormError } from "../common/Modal";
 import NewBoardForm from "./NewBoardForm";
 import {
   initialBoardForm,
@@ -11,6 +11,7 @@ import type { BoardSectionsType } from "../../pages/BoardSectionList";
 import type { AppDispatch } from "../../redux/store";
 import { deleteBoard, editBoard } from "../../redux/boardListReducer/action";
 import { IoWarningOutline } from "react-icons/io5";
+import { checkForReuiredFiled } from "../../utils/Board";
 
 export interface Board {
   id: string;
@@ -36,6 +37,10 @@ const BoardList: React.FC = () => {
   const [activeBoarId, setActiveBoardId] = useState<string | null>(null);
   const [confirmationModalOpen, setConfirmationModalOpen] =
     useState<boolean>(false);
+  const [formError, setFormError] = useState<FormError>({
+    error: false,
+    message: [],
+  });
   const dispatch = useDispatch<AppDispatch>();
 
   const handleCloseModal = () => {
@@ -70,15 +75,21 @@ const BoardList: React.FC = () => {
 
   const handleEditBoard = () => {
     if (activeBoarId) {
-      dispatch(editBoard({ id: activeBoarId, data: formData }));
-      handleCloseModal();
-      setActiveBoardId(null);
+      let fileds = ["boardName"];
+      let check = checkForReuiredFiled(fileds, formData);
+      if (check) {
+        dispatch(editBoard({ id: activeBoarId, data: formData }));
+        handleCloseModal();
+        setActiveBoardId(null);
+        setFormError({ error: false, message: [] });
+      } else {
+        setFormError({
+          error: true,
+          message: fileds.map((m) => `${m.toLocaleUpperCase()} is required`),
+        });
+      }
     }
   };
-
-  // useEffect(() => {
-  //   updateLocalStorageBoard(processedBoardList);
-  // }, [processedBoardList]);
 
   return (
     <div className="w-full mt-10">
@@ -130,6 +141,7 @@ const BoardList: React.FC = () => {
         submitHandler={handleEditBoard}
         handleCloseModal={handleCloseModal}
         title="Edit board"
+        formError={formError}
       >
         <NewBoardForm formData={formData} setFormData={setFormData} />
       </Modal>

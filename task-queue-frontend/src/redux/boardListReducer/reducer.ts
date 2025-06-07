@@ -40,6 +40,8 @@ const reducer = (state: Board[] = INITIAL_BOARD_LIST, action: ActionType) => {
                 return board
             })
 
+            updateLocalStorageBoard(preBoard);
+
             return preBoard
         }
 

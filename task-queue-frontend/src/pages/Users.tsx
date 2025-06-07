@@ -1,13 +1,14 @@
-import React, {useState } from "react";
+import React, { useState } from "react";
 import { FaPlus } from "react-icons/fa6";
 import UserList from "../components/users/UserList";
-import Modal from "../components/common/Modal";
+import Modal, { type FormError } from "../components/common/Modal";
 import NewUserForm from "../components/users/NewUserForm";
 import type { User } from "../redux/userReducer/userReducer";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch } from "react-redux";
 import type { AppDispatch } from "../redux/store";
 import { createUser } from "../redux/userReducer/action";
+import { checkForReuiredFiled } from "../utils/Board";
 
 export const DEFAULT_USER: User = {
   id: "",
@@ -18,25 +19,37 @@ export const DEFAULT_USER: User = {
   type: "member",
 };
 
-
 const Users: React.FC = () => {
   const [newUser, setNewUser] = useState<User>(DEFAULT_USER);
-
+  const [formError, setFormError] = useState<FormError>({
+    error: false,
+    message: [],
+  });
   const [createUserModalOpen, setCreateUserModalOpen] =
     useState<boolean>(false);
 
   const handleModalClose = () => {
     setCreateUserModalOpen(false);
+    setFormError({ error: false, message: [] });
   };
-
 
   const dispatch = useDispatch<AppDispatch>();
   const handleSubmitUser = () => {
     let user = { ...newUser };
     user.id = uuidv4();
-    dispatch(createUser(user));
-    setCreateUserModalOpen(false)
-    setNewUser(DEFAULT_USER)
+    let fileds = ["firstName", "lastName", "userName", "password"];
+    let check = checkForReuiredFiled(fileds, user);
+    if (check) {
+      dispatch(createUser(user));
+      setCreateUserModalOpen(false);
+      setNewUser(DEFAULT_USER);
+      setFormError({ error: false, message: [] });
+    } else {
+      setFormError({
+        error: true,
+        message: fileds.map((m) => `${m.toLocaleUpperCase()} is required`),
+      });
+    }
   };
   return (
     <div className="w-full">
@@ -58,6 +71,7 @@ const Users: React.FC = () => {
         title="Create User"
         handleCloseModal={handleModalClose}
         submitHandler={handleSubmitUser}
+        formError={formError}
       >
         <NewUserForm setNewUser={setNewUser} newUser={newUser} />
       </Modal>

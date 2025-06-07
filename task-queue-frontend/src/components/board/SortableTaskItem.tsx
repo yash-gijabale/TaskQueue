@@ -23,7 +23,9 @@ const SortableTaskItem = ({
   const auth: Auth = useSelector((state: any) => state.authReducer);
   let isAssignTome: boolean;
   if (auth.user && auth.user?.type !== "admin") {
-    isAssignTome = assigneeUser ? checkForMyTask(auth.user?.id, assigneeUser) : false;
+    isAssignTome = assigneeUser
+      ? checkForMyTask(auth.user?.id, assigneeUser)
+      : false;
   } else {
     isAssignTome = true;
   }
@@ -45,12 +47,10 @@ const SortableTaskItem = ({
 
   return isAssignTome ? (
     <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-      {" "}
       {children}
     </div>
   ) : (
     <div ref={setNodeRef} style={style}>
-      {" "}
       {children}
     </div>
   );

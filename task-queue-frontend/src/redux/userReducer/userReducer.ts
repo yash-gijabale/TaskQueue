@@ -1,4 +1,4 @@
-import { getAllusersFromLocalStorage } from "../../utils/User";
+import { getAllusersFromLocalStorage, updateUserLocalStorage } from "../../utils/User";
 import type { ActionType } from "../type";
 import { ADD_URER, ALL_USERS, EDIT_USER, REMOVE_USER } from "./type";
 
@@ -17,6 +17,8 @@ const userReducer = (state: User[] = preUsers, action: ActionType) => {
         case ADD_URER:
             let users = [...state]
             users.push(action.payload)
+            updateUserLocalStorage(users);
+
             return users;
 
         case ALL_USERS: return state

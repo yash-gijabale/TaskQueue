@@ -29,7 +29,7 @@ import {
   reArangeTask,
 } from "../redux/boardReducer/action";
 import type { AppDispatch } from "../redux/store";
-import Modal from "../components/common/Modal";
+import Modal, { type FormError } from "../components/common/Modal";
 import EditTaskForm from "../components/board/EditTaskForm";
 import { useParams } from "react-router";
 import {
@@ -81,7 +81,7 @@ const BoardSectionList: React.FC = () => {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [currenBoard, setCurrentBoard] = useState<Board | null>(null);
-
+  const [formError, setFormError] = useState<FormError>({ error: false, message: [] });
 
   const { id } = useParams();
   useEffect(() => {
@@ -198,7 +198,7 @@ const BoardSectionList: React.FC = () => {
     if (id) {
       updateLocalStorageboard(id, boardSections);
     }
-    return ()=>updateLocalStorageboard(id, boardSections)
+    return () => updateLocalStorageboard(id, boardSections);
   });
 
   const opnEditCardModal = (task: Task) => {
@@ -206,10 +206,28 @@ const BoardSectionList: React.FC = () => {
     setActiveTask(task);
   };
 
+  const checkForReuiredFiled = (filed: Array<string>, data: any) => {
+    let checkMap = filed.map((key) => {
+      return data[key] ? true : false;
+    });
+
+    return checkMap.every((key) => key === true);
+  };
   const editTaskHandler = () => {
-    activeTask && dispatch(editTask(activeTask));
-    setActiveTask(null);
-    setEditModalOpen(false);
+    if (activeTask) {
+      let check = checkForReuiredFiled(["title"], activeTask);
+      if (check) {
+        dispatch(editTask(activeTask));
+        setActiveTask(null);
+        setEditModalOpen(false);
+        setFormError({ error: false, message: [] });
+      } else {
+        setFormError({
+          error: true,
+          message: ["title"].map((m) => `${m.toLocaleUpperCase()} is required`),
+        });
+      }
+    }
   };
 
   return (
@@ -254,6 +272,7 @@ const BoardSectionList: React.FC = () => {
         title="Edit Task"
         handleCloseModal={() => setEditModalOpen(false)}
         submitHandler={editTaskHandler}
+        formError={formError}
       >
         {activeTask && (
           <EditTaskForm

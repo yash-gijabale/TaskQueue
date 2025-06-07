@@ -13,3 +13,11 @@ export const findBoardSectionContainer = (
     );
     return container;
 };
+
+export const checkForReuiredFiled = (filed: Array<string>, data: any) => {
+    let checkMap = filed.map((key) => {
+        return data[key] ? true : false;
+    });
+
+    return checkMap.every((key) => key === true);
+};

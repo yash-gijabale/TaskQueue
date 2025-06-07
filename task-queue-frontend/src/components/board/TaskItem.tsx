@@ -20,7 +20,8 @@ const checkForMyTask = (userId: string, assigneeUsers: Array<any>) => {
 const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
   const auth: Auth = useSelector((state: any) => state.authReducer);
 
-  const isAssignTome = auth.user?.id && task.users && checkForMyTask(auth.user?.id, task.users)
+  const isAssignTome =
+    auth.user?.id && task.users && checkForMyTask(auth.user?.id, task.users);
   const isDragging = useRef(false);
 
   const handlePointerDown = () => {
@@ -49,13 +50,16 @@ const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
             {task.tag.toUpperCase()}
           </div>
         )}
-        {isAssignTome && <div className="w-fit px-2 rounded text-xs bg-lime-400">My</div>}
+        {isAssignTome && (
+          <div className="w-fit px-2 rounded text-xs bg-lime-400">My</div>
+        )}
       </div>
 
-      <span className="font-semibold">{task.title}</span>
-      <div className="w-full">
-        <span>{task.description}</span>
+      <span className="font-semibold max-w-full break-words whitespace-pre-wrap">{task.title}</span>
+      <div className="max-w-full break-words whitespace-pre-wrap my-2">
+        <p className="text-sm text-gray-700">{task.description}</p>
       </div>
+
       <div className="w-full flex justify-end">
         {task.users && (
           <div className="w-fit px-2 text-xs bg-blue-200 rounded">

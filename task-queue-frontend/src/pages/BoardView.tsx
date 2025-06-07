@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { FaPlus } from "react-icons/fa6";
-import Modal from "../components/common/Modal";
+import Modal, { type FormError } from "../components/common/Modal";
 import NewBoardForm from "../components/board/NewBoardForm";
 import BoardList, { type Board } from "../components/board/BoardList";
 import { v4 as uuidv4 } from "uuid";
@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../redux/store";
 import { addNewBoard, getAllBoard } from "../redux/boardListReducer/action";
 import { INITISL_BOARD_COLUMNS } from "../redux/boardReducer/boardReducer";
+import { checkForReuiredFiled } from "../utils/Board";
 
 export const initialBoardForm = {
   boardName: "",
@@ -23,19 +24,22 @@ const BoardView: React.FC = () => {
   const [formData, setFormData] = useState(initialBoardForm);
   const dispatch = useDispatch<AppDispatch>();
   const boardList = useSelector((state: any) => state.boardListReducer);
-
+  const [formError, setFormError] = useState<FormError>({
+    error: false,
+    message: [],
+  });
   const handleCloseModal = () => {
     setModalOpen(false);
 
     setFormData(initialBoardForm);
   };
 
-  useEffect(()=>{
-    dispatch(getAllBoard())
-  },[])
+  useEffect(() => {
+    dispatch(getAllBoard());
+  }, []);
 
   useEffect(() => {
-    console.log(boardList)
+    console.log(boardList);
   }, [boardList]);
 
   const handleCreateBoard = () => {
@@ -46,9 +50,18 @@ const BoardView: React.FC = () => {
       createdAt: new Date().toISOString().substring(0, 10),
       columns: INITISL_BOARD_COLUMNS,
     };
-    dispatch(addNewBoard(newBoard));
-    handleCloseModal();
-
+    let fileds = ["name"]
+    let check = checkForReuiredFiled(fileds, newBoard);
+    if (check) {
+      dispatch(addNewBoard(newBoard));
+      handleCloseModal();
+      setFormError({ error: false, message: [] });
+    } else {
+      setFormError({
+        error: true,
+        message: fileds.map((m) => `${m.toLocaleUpperCase()} is required`),
+      });
+    }
   };
 
   return (
@@ -70,6 +83,7 @@ const BoardView: React.FC = () => {
         submitHandler={handleCreateBoard}
         handleCloseModal={handleCloseModal}
         title="Create board"
+        formError={formError}
       >
         <NewBoardForm formData={formData} setFormData={setFormData} />
       </Modal>

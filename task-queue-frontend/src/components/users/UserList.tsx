@@ -3,12 +3,13 @@ import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import type { User } from "../../redux/userReducer/userReducer";
 import { updateUserLocalStorage } from "../../utils/User";
-import Modal from "../common/Modal";
+import Modal, { type FormError } from "../common/Modal";
 import NewUserForm from "./NewUserForm";
 import { DEFAULT_USER } from "../../pages/Users";
 import type { AppDispatch } from "../../redux/store";
 import { editUser, removeUser } from "../../redux/userReducer/action";
 import { IoWarningOutline } from "react-icons/io5";
+import { checkForReuiredFiled } from "../../utils/Board";
 
 const UserList: React.FC = () => {
   const userList: User[] = useSelector((state: any) => state.userReducer);
@@ -17,6 +18,11 @@ const UserList: React.FC = () => {
     useState<boolean>(false);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
   const [user, setEditUser] = useState<User>(DEFAULT_USER);
+  const [formError, setFormError] = useState<FormError>({
+    error: false,
+    message: [],
+  });
+
   const dispatch = useDispatch<AppDispatch>();
   const handleEditUser = (user: User) => {
     setOpenEditModal(true);
@@ -24,9 +30,18 @@ const UserList: React.FC = () => {
   };
 
   const submitHandler = () => {
-    dispatch(editUser(user));
-    setOpenEditModal(false);
-    setEditUser(DEFAULT_USER);
+    let fileds = ["firstName", "lastName", "userName", "password"];
+    let check = checkForReuiredFiled(fileds, user);
+    if (check) {
+      dispatch(editUser(user));
+      setOpenEditModal(false);
+      setFormError({ error: false, message: [] });
+    } else {
+      setFormError({
+        error: true,
+        message: fileds.map((m) => `${m.toLocaleUpperCase()} is required`),
+      });
+    }
   };
 
   const handleDeleteUser = (id: string) => {
@@ -68,7 +83,9 @@ const UserList: React.FC = () => {
                     {user.firstName} {user.lastName}
                   </span>
                 </td>
-                <td className="px-3 py-4 text-center">{user.type.toUpperCase()}</td>
+                <td className="px-3 py-4 text-center">
+                  {user.type.toUpperCase()}
+                </td>
                 <td className="px-3 py-4 text-sm text-center text-gray-500">
                   {user.userName}
                 </td>
@@ -97,6 +114,8 @@ const UserList: React.FC = () => {
         title="Edit User"
         handleCloseModal={() => setOpenEditModal(false)}
         submitHandler={submitHandler}
+        formError={formError}
+
       >
         <NewUserForm newUser={user} setNewUser={setEditUser} />
       </Modal>

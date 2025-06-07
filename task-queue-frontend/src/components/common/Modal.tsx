@@ -1,6 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import { IoClose } from "react-icons/io5";
 
+export interface FormError{
+
+    error: boolean;
+    message: Array<string>;
+
+}
+
 interface ModalProps {
   open: boolean;
   handleCloseModal: any;
@@ -8,6 +15,7 @@ interface ModalProps {
   title: string;
   children: any;
   confirmation?: boolean;
+  formError?: FormError
 }
 const Modal: React.FC<ModalProps> = ({
   open,
@@ -16,6 +24,7 @@ const Modal: React.FC<ModalProps> = ({
   title,
   children,
   confirmation,
+  formError,
 }) => {
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -50,6 +59,13 @@ const Modal: React.FC<ModalProps> = ({
               <IoClose className="text-xl" />
             </button>
           </div>
+          {formError?.error && (
+            <div className="w-full bg-red-300 text-red-900 px-2">
+              {formError.message.map((m, ind) => {
+                return <p className="w-full" key={ind}>{m}</p>;
+              })}
+            </div>
+          )}
           <div className="w-full min-h-10 p-3 max-h-[80vh] overflow-y-auto">
             {children}
           </div>
