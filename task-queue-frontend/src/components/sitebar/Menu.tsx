@@ -31,7 +31,7 @@ const Menu: React.FC = () => {
         return (
           <Link  key={menu.id} to={menu.target}>
             <div
-              className="w-full h-10 flex rounded px-2 items-center text-gray-700 hover:bg-gray-200 cursor-pointer hover:text-black"
+              className="w-fullh-10 flex rounded px-2 items-center text-gray-700 hover:bg-gray-200 cursor-pointer hover:text-black"
             >
               <div className="flex space-x-1 items-center justify-center">
                 {menu.icon}

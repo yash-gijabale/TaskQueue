@@ -1,5 +1,5 @@
 import React from 'react';
-import logo from '../../../public/logo2.png';
+import logo from '../../../public/logo.png';
 import Navbar from './Navbar';
 
 interface SitebarProps {

@@ -12,8 +12,8 @@ const Login: React.FC = () => {
             <h1 className="text-white font-bold text-5xl/snug z-70">
               Task Quesue brings all your task, teammates and tool together.
             </h1>
-            <div className="hidden md:block md:w-100 h-100 rounded-full bg-violet-500/65 absolute top-[-10%] left-[-5%] z-[0]"></div>
-            <div className="hidden md:block md:w-70 h-70 rounded-full bg-indigo-500/65 absolute top-110 left-200"></div>
+            {/* <div className="hidden md:block md:w-100 h-100 rounded-full bg-violet-500/65 absolute top-[-10%] left-[-5%] z-[0]"></div>
+            <div className="hidden md:block md:w-70 h-70 rounded-full bg-indigo-500/65 absolute top-110 left-200"></div> */}
           </div>
         </div>
       </div>
@@ -22,7 +22,7 @@ const Login: React.FC = () => {
         className="w-full md:w-[30%] h-full flex flex-col  justify-between items-center z-10 bg-gradient-to-r from-violet-600 to-indigo-600 
   md:bg-gray-100 md:bg-none"
       >
-        <h1 className="inline text-2xl h-[20%] md:hidden text-white font-bold">
+        <h1 className="inline text-2xl h-[20%] pt-20 p-1 space-x md:hidden text-white font-bold items-center ">
           Task Quesue brings all your task, teammates and tool together.
         </h1>
 

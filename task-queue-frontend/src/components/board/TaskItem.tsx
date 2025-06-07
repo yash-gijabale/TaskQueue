@@ -55,17 +55,25 @@ const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
         )}
       </div>
 
-      <span className="font-semibold max-w-full break-words whitespace-pre-wrap">{task.title}</span>
+      <span className="font-semibold max-w-full break-words whitespace-pre-wrap">
+        {task.title}
+      </span>
       <div className="max-w-full break-words whitespace-pre-wrap my-2">
         <p className="text-sm text-gray-700">{task.description}</p>
       </div>
 
-      <div className="w-full flex justify-end">
-        {task.users && (
-          <div className="w-fit px-2 text-xs bg-blue-200 rounded">
-            Assignee {task.users.length}
-          </div>
-        )}
+      <div className="w-full flex justify-between">
+        <div className="flex flex-col">
+          {task.createdBy?.name && <span className="text-xs text-gray-500">Creator: {task.createdBy?.name}</span>}
+          {/* {task.dueDate && <span className="text-xs text-gray-500">Target: {task.dueDate}</span>} */}
+        </div>
+        <div>
+          {task.users && (
+            <div className="w-fit px-2 text-xs bg-blue-200 rounded">
+              Assignee {task.users.length}
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );

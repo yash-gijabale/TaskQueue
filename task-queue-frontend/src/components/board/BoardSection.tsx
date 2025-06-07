@@ -8,7 +8,7 @@ import {
 import SortableTaskItem from "./SortableTaskItem";
 import type { Task } from "../../pages/BoardSectionList";
 import TaskItem from "./TaskItem";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../../redux/store";
 import {
   addTask,
@@ -20,6 +20,7 @@ import Modal from "../common/Modal";
 
 import { BiTrash } from "react-icons/bi";
 import { IoWarningOutline } from "react-icons/io5";
+import type { Auth } from "../../redux/authReducer/authReducer";
 
 type BoardSectionProps = {
   id: string;
@@ -33,6 +34,7 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
   });
 
   const dispatch = useDispatch<AppDispatch>();
+  const auth:Auth = useSelector((state:any)=> state.authReducer)
   const [confirmationModalOpen, setConfirmationModalOpen] =
     useState<boolean>(false);
 
@@ -42,6 +44,8 @@ const BoardSection = ({ id, title, tasks }: BoardSectionProps) => {
       title: "Add title",
       status: id,
       description: "",
+      dueDate:'',
+      createdBy:{id:auth.user?.id, name:`${auth.user?.firstName} ${auth.user?.lastName}`}
     };
     dispatch(addTask(newTask));
   };

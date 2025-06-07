@@ -68,7 +68,7 @@ const UserList: React.FC = () => {
             <tr className="text-sm text-gray-800 font-normal rounded-xl uppercase bg-gray-200">
               <th className="px-6 py-3 text-left">Name</th>
               <th className="px-6 py-3 text-center">Type</th>
-              <th className="px-6 py-3 text-center">Created</th>
+              <th className="px-6 py-3 text-center">User Name</th>
               <th className="px-6 py-3 text-right">Actions</th>
             </tr>
           </thead>

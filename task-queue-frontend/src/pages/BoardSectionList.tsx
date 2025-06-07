@@ -16,7 +16,10 @@ import {
 } from "@dnd-kit/core";
 import { sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import { getTaskById } from "../utils/Task";
-import { findBoardSectionContainer } from "../utils/Board";
+import {
+  checkForReuiredFiled,
+  findBoardSectionContainer,
+} from "../utils/Board";
 import BoardSection from "../components/board/BoardSection";
 import TaskItem from "../components/board/TaskItem";
 import { FaPlus } from "react-icons/fa6";
@@ -47,6 +50,8 @@ export type Task = {
   status: string;
   tag?: Tags;
   users?: Array<{ id: string; name: string }>;
+  dueDate?: string;
+  createdBy?: { id?:string; name?: string };
 };
 
 export type BoardSectionsType = {
@@ -81,7 +86,10 @@ const BoardSectionList: React.FC = () => {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [currenBoard, setCurrentBoard] = useState<Board | null>(null);
-  const [formError, setFormError] = useState<FormError>({ error: false, message: [] });
+  const [formError, setFormError] = useState<FormError>({
+    error: false,
+    message: [],
+  });
 
   const { id } = useParams();
   useEffect(() => {
@@ -206,13 +214,6 @@ const BoardSectionList: React.FC = () => {
     setActiveTask(task);
   };
 
-  const checkForReuiredFiled = (filed: Array<string>, data: any) => {
-    let checkMap = filed.map((key) => {
-      return data[key] ? true : false;
-    });
-
-    return checkMap.every((key) => key === true);
-  };
   const editTaskHandler = () => {
     if (activeTask) {
       let check = checkForReuiredFiled(["title"], activeTask);
@@ -233,7 +234,7 @@ const BoardSectionList: React.FC = () => {
   return (
     <div className="w-full">
       <div className="w-full flex justify-between my-2">
-        <span className="text-lg text-gray-500">
+        <span className="text-lg text-gray-800 font-bold">
           {currenBoard && currenBoard.name}
         </span>
         <button

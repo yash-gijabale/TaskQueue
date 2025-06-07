@@ -69,7 +69,7 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
         </div>
 
         <div className="w-full flex space-x-1 items-end">
-          <div className="w-full flex flex-col">
+          <div className="w-1/2 flex flex-col">
             <label>Priority</label>
             <select
               defaultValue={task.tag}
@@ -90,6 +90,20 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
                 );
               })}
             </select>
+          </div>
+          <div className="w-1/2 flex flex-col">
+            <label>Due Date</label>
+            <input
+              type="date"
+              className="p-2  rounded outline-blue-500  border-1 border-gray-400"
+              defaultValue={task.dueDate}
+              onChange={(e) =>
+                setActiveTask((prev: any) => ({
+                  ...prev,
+                  dueDate: e.target.value,
+                }))
+              }
+            />
           </div>
         </div>
         <div className="w-full">

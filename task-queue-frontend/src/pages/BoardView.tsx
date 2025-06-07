@@ -67,7 +67,7 @@ const BoardView: React.FC = () => {
   return (
     <div className="w-full">
       <div className="w-full flex justify-between">
-        <span className="text-lg text-gray-500">All boards</span>
+        <span className="text-lg text-gray-800">All boards</span>
         <button
           className="p-1 px-2 bg-blue-500 text-white rounded flex items-center gap-2 cursor-pointer hover:bg-blue-600"
           onClick={() => setModalOpen(true)}
