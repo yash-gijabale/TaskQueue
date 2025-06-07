@@ -4,7 +4,9 @@
 
 This Task Board Application enables efficient collaboration within organizations by visually organizing tasks on customizable boards. Users can create boards, columns (lists), and tasks, assign tasks to team members, prioritize them, and rearrange cards with drag-and-drop functionality.
 
-https://task-queue-tau.vercel.app
+https://task-queue-tau.vercel.app 🚀
+
+
 ![Screenshot 2025-06-08 001457](https://github.com/user-attachments/assets/0ec4c72b-50a4-4749-94c9-f068c76a5d9e)
 
 
