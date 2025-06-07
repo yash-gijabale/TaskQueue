@@ -77,9 +77,9 @@ const BoardList: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    updateLocalStorageBoard(processedBoardList);
-  }, [processedBoardList]);
+  // useEffect(() => {
+  //   updateLocalStorageBoard(processedBoardList);
+  // }, [processedBoardList]);
 
   return (
     <div className="w-full mt-10">

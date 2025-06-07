@@ -34,7 +34,6 @@ const Users: React.FC = () => {
   const handleSubmitUser = () => {
     let user = { ...newUser };
     user.id = uuidv4();
-    console.log(user);
     dispatch(createUser(user));
     setCreateUserModalOpen(false)
     setNewUser(DEFAULT_USER)

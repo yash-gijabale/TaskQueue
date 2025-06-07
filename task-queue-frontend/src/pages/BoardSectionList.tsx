@@ -71,18 +71,17 @@ const updateLocalStorageboard = (boardId: any, data: BoardSectionsType) => {
     });
     localStorage.setItem("boardList", JSON.stringify(allBoard));
   }
-  console.log("localstorage updated");
 };
 
 const BoardSectionList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const boardSections = useSelector((state: any) => state.boardReducer);
-  console.log(boardSections);
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
   const [activeContainer, setActiveContainer] = useState<null | string>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
   const [activeTask, setActiveTask] = useState<Task | null>(null);
   const [currenBoard, setCurrentBoard] = useState<Board | null>(null);
+
 
   const { id } = useParams();
   useEffect(() => {
@@ -119,8 +118,6 @@ const BoardSectionList: React.FC = () => {
       over?.id as string
     );
 
-    console.log(activeContainer,overContainer)
-
     if (
       !activeContainer ||
       !overContainer ||
@@ -137,13 +134,10 @@ const BoardSectionList: React.FC = () => {
         over: over?.id,
       })
     );
-    if (id) {
-      updateLocalStorageboard(id, boardSections);
-    }
+    updateLocalStorageboard(id, boardSections);
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    console.log(active, over);
     const activeContainer = findBoardSectionContainer(
       boardSections,
       active.id as string
@@ -153,7 +147,6 @@ const BoardSectionList: React.FC = () => {
       over?.id as string
     );
 
-    console.log(activeContainer, overContainer);
     if (
       !activeContainer ||
       !overContainer ||
@@ -205,8 +198,8 @@ const BoardSectionList: React.FC = () => {
     if (id) {
       updateLocalStorageboard(id, boardSections);
     }
-
-  }, [boardSections, id, activeTask]);
+    return ()=>updateLocalStorageboard(id, boardSections)
+  });
 
   const opnEditCardModal = (task: Task) => {
     setEditModalOpen(true);
@@ -221,7 +214,7 @@ const BoardSectionList: React.FC = () => {
 
   return (
     <div className="w-full">
-      <div className="w-full flex justify-between">
+      <div className="w-full flex justify-between my-2">
         <span className="text-lg text-gray-500">
           {currenBoard && currenBoard.name}
         </span>
@@ -239,7 +232,7 @@ const BoardSectionList: React.FC = () => {
         onDragOver={handleDragOver}
         onDragEnd={handleDragEnd}
       >
-        <div className="w-full flex flex-nowrap overflow-x-auto gap-5 min-h-screen mt-5">
+        <div className="max-w-full flex flex-nowrap overflow-x-auto gap-5">
           {Object.keys(boardSections).map((boardSectionKey) => (
             <BoardSection
               key={boardSectionKey}
@@ -250,7 +243,7 @@ const BoardSectionList: React.FC = () => {
           ))}
           <DragOverlay dropAnimation={dropAnimation}>
             {task ? (
-              <TaskItem task={task} clickHandler={opnEditCardModal}  />
+              <TaskItem task={task} clickHandler={opnEditCardModal} />
             ) : null}
           </DragOverlay>
         </div>

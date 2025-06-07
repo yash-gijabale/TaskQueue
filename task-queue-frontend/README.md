@@ -1,54 +1,57 @@
-# React + TypeScript + Vite
+# Task Queue Application
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Project Overview
 
-Currently, two official plugins are available:
+This Task Board Application enables efficient collaboration within organizations by visually organizing tasks on customizable boards. Users can create boards, columns (lists), and tasks, assign tasks to team members, prioritize them, and rearrange cards with drag-and-drop functionality.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+https://task-queue-tau.vercel.app
 
-## Expanding the ESLint configuration
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Features
 
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+- Multiple boards with tabular overview
+- Detailed board view with columns displayed horizontally
+- Create, edit, and delete columns and tasks
+- Tasks can be assigned to team members
+- Task priority management (High, Medium, Low)
+- Drag-and-drop support to reorder tasks within columns or move them between columns
+- Responsive UI for desktop and mobile
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Project Structure
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+- **Board View Page:** Create new boards and see all boards listed
+- **Board Detail Page:** Manage columns and tasks within a selected board
+
+---
+
+## Setup and Run Locally
+
+### Prerequisites
+
+- Node.js (v16 or above recommended)
+- npm or yarn package manager
+- Git
+
+### Steps
+
+1. Clone the repository
+
+   ```bash
+   git clone https://github.com/your-username/your-repo-name.git
+   cd your-repo-name
+   
+2. Install dependencies
+	Using npm
+	```bash
+   npm install
+  
+  3. Start the development server
+	 ```bash
+	 npm run dev
+	 
+ 3. Open your browser and navigate to
+	 ```bash
+	 http://localhost:5173
+  

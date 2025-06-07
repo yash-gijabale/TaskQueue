@@ -38,7 +38,7 @@ const Modal: React.FC<ModalProps> = ({
         className="w-screen fixed h-screen inset-0 bg-black/20 flex z-50 justify-center items-center"
       >
         <div
-          className="w-[40%] rounded bg-white"
+          className="w-[90%] m-auto md:w-[40%] rounded bg-white"
           onClick={(e) => e.stopPropagation()}
         >
           <div className="w-full h-10 p-6 px-3 border-b-1 border-gray-200 flex items-center justify-between">

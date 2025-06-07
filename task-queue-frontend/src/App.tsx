@@ -6,7 +6,6 @@ import type { Auth } from "./redux/authReducer/authReducer";
 
 function App() {
   const auth: Auth = useSelector((state: any) => state.authReducer);
-  console.log(auth)
   return <>{auth.isLogged ? <Layout /> : <AuthRouter />}</>;
 }
 

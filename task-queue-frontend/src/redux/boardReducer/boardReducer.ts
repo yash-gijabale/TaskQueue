@@ -3,7 +3,6 @@ import type { BoardSectionsType, Task } from "../../pages/BoardSectionList";
 import type { ActionType } from "../type"
 import { ADD_COLUMN, ADD_TASK, EDIT_TASK, GET_COLUMN_LIST, ON_DRAG_END, REARANGE_TASK, REMOVE_COLUMN, REMOVE_TASK, RENAME_COLUMN } from "./type";
 
-
 export const INITISL_BOARD_COLUMNS: BoardSectionsType = {
     'todo': { title: 'Todo', task: [] },
     'inprocess': { title: 'In Proccess', task: [] },
@@ -23,7 +22,6 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
     switch (action.type) {
         case GET_COLUMN_LIST:
             let list = getInitialBoard()
-            console.log(list)
             return list
 
         case ADD_COLUMN: {
@@ -41,7 +39,6 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
         case RENAME_COLUMN: {
             let newColumns = { ...state }
             const { id, newName } = action.payload
-            console.log(newName, id)
             return {
                 ...newColumns,
                 [id]: {
@@ -52,11 +49,9 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
         }
 
         case REARANGE_TASK: {
-            console.log('on draf end')
 
             let preState = { ...state };
             let { activeContainer, overContainer, active, over } = action.payload;
-            console.log(activeContainer, overContainer)
             const activeItems = preState[activeContainer].task;
             const overItems = preState[overContainer].task;
 
@@ -103,7 +98,6 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
 
             if (activeIndex === -1 || overIndex === -1) return state;
 
-            console.log(activeContainer, overContainer)
             const movingTask = {
                 ...activeTasks[activeIndex],
                 status: overContainer,
@@ -155,17 +149,12 @@ const boardReducer = (state: BoardSectionsType = getInitialBoard(), action: Acti
         case EDIT_TASK: {
             const { id, status } = action.payload;
             const preState = { ...state };
-            // console.log(activeContainer, activeTask)
 
             const newTaskList = preState[status].task.map((task: Task) =>
                 task.id === id
                     ? action.payload
                     : task
             );
-
-            console.log(newTaskList)
-            console.log(status)
-
             return {
                 ...preState,
                 [status]: {

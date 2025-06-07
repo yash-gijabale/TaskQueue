@@ -21,7 +21,7 @@ const reducer = (state: Board[] = INITIAL_BOARD_LIST, action: ActionType) => {
         }
 
         case GET_BOARD_LIST: {
-            return state
+            return localStorage.getItem('boardList') ? JSON.parse(oldData) : []
         }
 
         case EDIT_BOARD: {
@@ -49,7 +49,7 @@ const reducer = (state: Board[] = INITIAL_BOARD_LIST, action: ActionType) => {
             return preBoard
         }
         default:
-            return state;
+            return localStorage.getItem('boardList') ? JSON.parse(oldData) : [];
     }
 }
 

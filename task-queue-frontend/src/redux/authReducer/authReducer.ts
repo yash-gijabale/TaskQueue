@@ -9,7 +9,6 @@ export interface Auth {
 }
 let preAurh = getAuthState()
 const INITAL_AUTH: Auth = preAurh ? preAurh : { isLogged: false, user: null }
-console.log(INITAL_AUTH)
 const authReducer = (state: Auth = INITAL_AUTH, action: ActionType) => {
     switch (action.type) {
 

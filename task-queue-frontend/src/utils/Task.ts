@@ -5,6 +5,5 @@ export const getTasksByStatus = (tasks: Task[], status: string) => {
 };
 
 export const getTaskById = (tasks: Task[], id: string) => {
-  console.log(tasks)
   return tasks.find((task) => task.id === id);
 };

@@ -6,7 +6,7 @@ import BoardList, { type Board } from "../components/board/BoardList";
 import { v4 as uuidv4 } from "uuid";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch } from "../redux/store";
-import { addNewBoard } from "../redux/boardListReducer/action";
+import { addNewBoard, getAllBoard } from "../redux/boardListReducer/action";
 import { INITISL_BOARD_COLUMNS } from "../redux/boardReducer/boardReducer";
 
 export const initialBoardForm = {
@@ -30,8 +30,13 @@ const BoardView: React.FC = () => {
     setFormData(initialBoardForm);
   };
 
+  useEffect(()=>{
+    dispatch(getAllBoard())
+  },[])
+
   useEffect(() => {
-    updateLocalStorageBoard(boardList);
+    console.log(boardList)
+    // updateLocalStorageBoard(boardList);
   }, [boardList]);
 
   const handleCreateBoard = () => {
