@@ -42,8 +42,9 @@ https://task-queue-tau.vercel.app 🚀
 1. Clone the repository
 
    ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+   git clone https://github.com/yash-gijabale/TaskQueue.git
+   cd TaskQueue
+   cd task-queue-frontend
    
 2. Install dependencies
 	Using npm
