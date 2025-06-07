@@ -36,7 +36,6 @@ const BoardView: React.FC = () => {
 
   useEffect(() => {
     console.log(boardList)
-    // updateLocalStorageBoard(boardList);
   }, [boardList]);
 
   const handleCreateBoard = () => {
@@ -49,6 +48,7 @@ const BoardView: React.FC = () => {
     };
     dispatch(addNewBoard(newBoard));
     handleCloseModal();
+
   };
 
   return (

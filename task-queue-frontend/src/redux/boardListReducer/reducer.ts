@@ -1,4 +1,5 @@
 import type { Board } from "../../components/board/BoardList";
+import { updateLocalStorageBoard } from "../../pages/BoardView";
 import { INITISL_BOARD_COLUMNS } from "../boardReducer/boardReducer";
 import { GET_BOARD_LIST } from "../boardReducer/type";
 import type { ActionType } from "../type";
@@ -16,11 +17,12 @@ const reducer = (state: Board[] = INITIAL_BOARD_LIST, action: ActionType) => {
                 ...action.payload,
                 columns: INITISL_BOARD_COLUMNS
             }
-
+            updateLocalStorageBoard([...preBoards, newBoard])
             return [...preBoards, newBoard]
         }
 
         case GET_BOARD_LIST: {
+            let oldData: any = localStorage.getItem('boardList')
             return localStorage.getItem('boardList') ? JSON.parse(oldData) : []
         }
 

@@ -1,5 +1,4 @@
 import React from "react";
-import Home from "../pages/Home";
 import { useRoutes } from "react-router";
 import { Navigate, type RouteObject } from "react-router";
 import BoardView from "../pages/BoardView";
@@ -9,7 +8,7 @@ import Users from "../pages/Users";
 const routes: Array<RouteObject> = [
   {
     path: "/",
-    element: <Home />,
+    element: <BoardView />,
   },
   {
     path: "/board-list",
