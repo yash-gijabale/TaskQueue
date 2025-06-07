@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, {useState } from "react";
 import { FiEdit, FiTrash2 } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router";
@@ -6,7 +6,6 @@ import Modal from "../common/Modal";
 import NewBoardForm from "./NewBoardForm";
 import {
   initialBoardForm,
-  updateLocalStorageBoard,
 } from "../../pages/BoardView";
 import type { BoardSectionsType } from "../../pages/BoardSectionList";
 import type { AppDispatch } from "../../redux/store";
