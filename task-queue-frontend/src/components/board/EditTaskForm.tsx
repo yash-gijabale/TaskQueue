@@ -30,7 +30,11 @@ const EditTaskForm: React.FC<EditTaskFormProps> = ({
 
   return (
     <div className="w-full">
-      <div className="full flex justify-end">
+      <div className="full flex justify-between">
+        {task.createdBy?.name && (
+          <div className="rounded bg-blue-100 p-1 text-xs w-fit">Created By: <span className="font-semibold">{task.createdBy.name}</span></div>
+        )}
+
         <span
           className="flex gap-1 items-center text-red-500 px-2 cursor-pointer text-sm rounded-lg hover:bg-red-100 hover:text-red-800"
           onClick={handleRemoveTask}

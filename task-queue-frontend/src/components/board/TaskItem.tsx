@@ -64,7 +64,7 @@ const TaskItem = ({ task, clickHandler }: TaskItemProps) => {
 
       <div className="w-full flex justify-between">
         <div className="flex flex-col">
-          {task.createdBy?.name && <span className="text-xs text-gray-500">Creator: {task.createdBy?.name}</span>}
+          {task.dueDate && <span className="text-xs text-gray-500">Due date : {task.dueDate}</span>}
           {/* {task.dueDate && <span className="text-xs text-gray-500">Target: {task.dueDate}</span>} */}
         </div>
         <div>

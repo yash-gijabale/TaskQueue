@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 
 import {
   closestCorners,
@@ -39,9 +39,11 @@ import {
   getBoardFromLocalStorage,
   type Board,
 } from "../components/board/BoardList";
+import type { User } from "../redux/userReducer/userReducer";
 
 export type Status = "backlog" | "in progress" | "done";
 export type Tags = "high" | "medium" | "low";
+type Sort = "all" | "needToComplete" | "upcomming";
 
 export type Task = {
   id: string;
@@ -51,7 +53,7 @@ export type Task = {
   tag?: Tags;
   users?: Array<{ id: string; name: string }>;
   dueDate?: string;
-  createdBy?: { id?:string; name?: string };
+  createdBy?: { id?: string; name?: string };
 };
 
 export type BoardSectionsType = {
@@ -81,6 +83,7 @@ const updateLocalStorageboard = (boardId: any, data: BoardSectionsType) => {
 const BoardSectionList: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const boardSections = useSelector((state: any) => state.boardReducer);
+  const users: User[] = useSelector((state: any) => state.userReducer);
   const [activeTaskId, setActiveTaskId] = useState<null | string>(null);
   const [activeContainer, setActiveContainer] = useState<null | string>(null);
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
@@ -90,6 +93,77 @@ const BoardSectionList: React.FC = () => {
     error: false,
     message: [],
   });
+
+  const [filters, setFilters] = useState({
+    priority: "all",
+    assinee: "all",
+    sort: "all",
+  });
+
+  const [search, setSearch] = useState<string>("");
+
+  let filteredBoardSections: BoardSectionsType = useMemo(() => {
+    let boards: BoardSectionsType = JSON.parse(JSON.stringify(boardSections));
+    if (filters.priority !== "all") {
+      Object.keys(boards).map((boardSectionKey) => {
+        let task: Task[] = boards[boardSectionKey].task;
+        boards[boardSectionKey].task = task.filter((task: Task) => {
+          return task.tag === filters.priority;
+        });
+      });
+    }
+
+    if (filters.assinee !== "all") {
+      Object.keys(boards).map((boardSectionKey) => {
+        let task: Task[] = boards[boardSectionKey].task;
+        boards[boardSectionKey].task = task.filter((task: Task) => {
+          let isAssign = task.users?.find((u) => {
+            return u.id === filters.assinee;
+          });
+
+          if (isAssign) {
+            return task;
+          }
+        });
+      });
+    }
+
+    if ((filters.sort as Sort) !== "all") {
+      Object.keys(boards).map((boardSectionKey) => {
+        let task: Task[] = boards[boardSectionKey].task;
+        boards[boardSectionKey].task = task.sort((a, b) => {
+          const dateA = a.dueDate ? new Date(a.dueDate).getTime() : Infinity;
+          const dateB = b.dueDate ? new Date(b.dueDate).getTime() : Infinity;
+          let diff: number = 0;
+          if ((filters.sort as Sort) === "needToComplete") diff = dateA - dateB;
+          if ((filters.sort as Sort) === "upcomming") diff = dateB - dateA;
+          return diff;
+        });
+      });
+    }
+
+    if (search) {
+      Object.keys(boards).map((boardSectionKey) => {
+        let task: Task[] = boards[boardSectionKey].task;
+        boards[boardSectionKey].task = task.filter((task: Task) => {
+          return task.title
+            .toLocaleLowerCase()
+            .includes(search.toLocaleLowerCase());
+        });
+      });
+    }
+
+    return boards;
+  }, [filters, boardSections, search]);
+
+  const deBounce = useRef<number | null>(null);
+  const handleSearch = (e: any) => {
+    let query: string = e.target.value;
+    if (deBounce.current) clearTimeout(deBounce.current);
+    deBounce.current = setTimeout(() => {
+      setSearch(query);
+    }, 400);
+  };
 
   const { id } = useParams();
   useEffect(() => {
@@ -206,7 +280,10 @@ const BoardSectionList: React.FC = () => {
     if (id) {
       updateLocalStorageboard(id, boardSections);
     }
-    return () => updateLocalStorageboard(id, boardSections);
+    return () => {
+      updateLocalStorageboard(id, boardSections);
+      deBounce.current && clearTimeout(deBounce.current);
+    };
   });
 
   const opnEditCardModal = (task: Task) => {
@@ -237,12 +314,58 @@ const BoardSectionList: React.FC = () => {
         <span className="text-lg text-gray-800 font-bold">
           {currenBoard && currenBoard.name}
         </span>
-        <button
-          className="p-1 px-2 bg-blue-500 text-white rounded flex items-center gap-2 cursor-pointer hover:bg-blue-600"
-          onClick={addColumn}
-        >
-          <FaPlus /> New Column
-        </button>
+        <div className="flex gap-2 items-center">
+          <div>
+            <input
+              onChange={handleSearch}
+              type="search"
+              placeholder="Search task"
+              className="border border-gray-300 p-1 rounded outline-0 bg-gray-100"
+            />
+          </div>
+          <select
+            onChange={(e) => {
+              setFilters((pre) => ({ ...pre, assinee: e.target.value }));
+            }}
+            className="p-1 rounded outline-0 bg-gray-100 border border-gray-300"
+          >
+            <option value={"all"}>All Assignee</option>
+            {users.map((user: User) => {
+              return (
+                <option key={user.id} value={user.id}>
+                  {user.firstName} {user.lastName}
+                </option>
+              );
+            })}
+          </select>
+          <select
+            onChange={(e) => {
+              setFilters((pre) => ({ ...pre, priority: e.target.value }));
+            }}
+            className="p-1 rounded outline-0 bg-gray-100 border border-gray-300"
+          >
+            <option value={"all"}>All</option>
+            <option value={"low"}>Low</option>
+            <option value={"medium"}>Medium</option>
+            <option value={"high"}>High</option>
+          </select>
+           <select
+            onChange={(e) => {
+              setFilters((pre) => ({ ...pre, sort: e.target.value }));
+            }}
+            className="p-1 rounded outline-0 bg-gray-100 border border-gray-300"
+          >
+            <option value={"all"}>All Due</option>
+            <option value={"needToComplete"}>Need attention</option>
+            <option value={"upcomming"}>Up Comming</option>
+          </select>
+          <button
+            className="p-1 px-2 bg-blue-500 text-white rounded flex items-center gap-2 cursor-pointer hover:bg-blue-600"
+            onClick={addColumn}
+          >
+            <FaPlus /> New Column
+          </button>
+        </div>
       </div>
       <DndContext
         sensors={sensors}
@@ -252,12 +375,12 @@ const BoardSectionList: React.FC = () => {
         onDragEnd={handleDragEnd}
       >
         <div className="max-w-full flex flex-nowrap overflow-x-auto gap-5">
-          {Object.keys(boardSections).map((boardSectionKey) => (
+          {Object.keys(filteredBoardSections).map((boardSectionKey) => (
             <BoardSection
               key={boardSectionKey}
               id={boardSectionKey}
-              title={boardSections[boardSectionKey].title}
-              tasks={boardSections[boardSectionKey].task}
+              title={filteredBoardSections[boardSectionKey].title}
+              tasks={filteredBoardSections[boardSectionKey].task}
             />
           ))}
           <DragOverlay dropAnimation={dropAnimation}>
